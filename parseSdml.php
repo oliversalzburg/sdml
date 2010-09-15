@@ -1,10 +1,14 @@
 <?php
-  require_once( dirname( __FILE__ ) . "/logging/Logging.php" );
+  define( "SDML_USE_LOGGING", false );
+
+  if( SDML_USE_LOGGING ) {
+    require_once( dirname( __FILE__ ) . "/logging/Logging.php" );
+    Logging::setLogLevel( Logging::eDEBUG );
+    Logging::addConsoleLogger();
+  }
+
   require_once( dirname( __FILE__ ) . "/SdmlParser.php" );
   require_once( dirname( __FILE__ ) . "/MySqlConnector.php" );
-
-  Logging::setLogLevel( Logging::eDEBUG );
-  Logging::addConsoleLogger();
 
   $shortopts  = "";
   $shortopts .= "p::";  // MySQL password
@@ -43,6 +47,8 @@
 
   $parser = new SdmlParser();
   $parser->isDebug = $isDebug;
+  $parser->errorLog = "error";
+  $parser->debugLog = "debug";
   $parser->init();
   $parser->QueryFunc = "queryCallback";
   try {
@@ -60,7 +66,7 @@
     global $useMySqlConnector;
     global $isDebug;
     if( $isDebug ) {
-      Logging::debug( $query );
+      debug( $query );
     }
     if( $useMySqlConnector ) {
       connectorQuery( $query );
@@ -77,5 +83,21 @@
   function connectorQuery( $query ) {
     global $connector;
     $connector->processParserOutput( $query );
+  }
+
+  function debug( $message ) {
+    if( SDML_USE_LOGGING ) {
+      Logging::debug( $message );
+    } else {
+      echo( $message . "\n" );
+    }
+  }
+
+  function error( $message ) {
+    if( SDML_USE_LOGGING ) {
+      Logging::error( $message );
+    } else {
+      echo( $message . "\n" );
+    }
   }
 ?>

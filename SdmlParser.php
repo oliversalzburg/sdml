@@ -15,7 +15,7 @@
   class SdmlParser {
     private $isInitialized = false;
     public $isDebug = false;
-    
+
     public $errorLog;
     public $debugLog;
 
@@ -103,7 +103,7 @@
     public function internalParse( $lineNumber, $line ) {
       $this->context->Line = $lineNumber + 1;
 
-      if( $this->isDebug ) Logging::debug( $line );
+      if( $this->isDebug ) call_user_func( $this->debugLog, $line );
 
       // Skip comments
       $isComment = preg_match( "~^\s*((//)|(#)|(;))~", $line, $matches );
@@ -122,12 +122,12 @@
         if( strlen( $whiteSpace ) > $this->lastWhitespace ) {
           $this->scopes[] = $this->result;
           $this->lastWhitespace = strlen( $whiteSpace );
-          if( $this->isDebug ) Logging::debug( "Adjusting scope downwards" );
+          if( $this->isDebug ) call_user_func( $this->debugLog, "Adjusting scope downwards" );
 
         } else if( strlen( $whiteSpace ) < $this->lastWhitespace ) {
           array_pop( $this->scopes );
           $this->lastWhitespace = strlen( $whiteSpace );
-          if( $this->isDebug ) Logging::debug( "Adjusting scope upwards" );
+          if( $this->isDebug ) call_user_func( $this->debugLog, "Adjusting scope upwards" );
         }
       }
 
@@ -139,7 +139,7 @@
         $this->context->Scope = $this->scopes[ count( $this->scopes ) - 1 ];
       }
 
-      if( $this->isDebug ) Logging::debug( get_class( $this->context->Scope ) );
+      if( $this->isDebug ) call_user_func( $this->debugLog, "Current scope type: " . get_class( $this->context->Scope ) );
 
       // Remove excessive whitespace
       $line = preg_replace( "/\s+/", " ", trim( $line ) );
@@ -148,7 +148,7 @@
       $tokens = explode( " ", $line );
       $token  = $tokens[ 0 ];
 
-      if( $this->isDebug ) Logging::debug( "Parsing line." );
+      if( $this->isDebug ) call_user_func( $this->debugLog, "Parsing line." );
       // Construct parser and parse tokens
       $parser = ParserLibrary::parserFromToken( $token );
       $this->result = call_user_func( array( $parser, "parse" ), $tokens );
