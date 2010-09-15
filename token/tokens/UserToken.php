@@ -33,6 +33,12 @@
     }
 
     public function toSql( $callback ) {
+      $grantBeforeDrop =
+        sprintf(
+          "GRANT USAGE ON *.* TO '%s'@'localhost';",
+          $this->Username
+        )
+      ;
       $drop =
         sprintf(
           "DROP USER '%s'@'localhost';",
@@ -55,11 +61,12 @@
         )
       ;
 
-      parent::callQueryCallback( $callback, $drop, $create, $grant );
+      parent::callQueryCallback( $callback, $grantBeforeDrop, $drop, $create, $grant );
 
       $result =
         sprintf(
-          "%s%s%s",
+          "%s%s%s%s",
+          $grantBeforeDrop,
           $drop,
           $create,
           $grant
