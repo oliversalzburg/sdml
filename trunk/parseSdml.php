@@ -2,7 +2,7 @@
   define( "SDML_USE_LOGGING", false );
 
   if( SDML_USE_LOGGING ) {
-    require_once( dirname( __FILE__ ) . "/logging/Logging.php" );
+    require_once( dirname( __FILE__ ) . "/../../logging/Logging.php" );
     Logging::setLogLevel( Logging::eDEBUG );
     Logging::addConsoleLogger();
   }
@@ -43,6 +43,8 @@
   $connector = null;
   if( $useMySqlConnector ) {
     $connector = new MySqlConnector( $mysqlPassword );
+    $connector->errorLog = "error";
+    $connector->debugLog = "debug";
   }
 
   $parser = new SdmlParser();

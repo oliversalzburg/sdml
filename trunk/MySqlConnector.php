@@ -7,6 +7,9 @@
 
     private $mysqli;
 
+    public $errorLog;
+    public $debugLog;
+
     public function __construct( $password, $username = "root", $hostname = "localhost", $port = 3306 ) {
       $this->username = $username;
       $this->password = $password;
@@ -27,8 +30,8 @@
       $this->connect();
       $result = $this->mysqli->multi_query( $output );
       if( FALSE === $result ) {
-        Logging::error( $this->mysqli->error );
-        Logging::error( $output );
+        call_user_func( $this->errorLog, $this->mysqli->error );
+        call_user_func( $this->errorLog, $output );
       }
     }
   }
