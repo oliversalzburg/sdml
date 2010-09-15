@@ -1,0 +1,21 @@
+database library
+  user librarian secretpassword
+  table book
+    uint64      !+id
+    string8     title
+    uint32      -author
+    string24    ?description
+    timestamp   releaseDate
+    ctimestamp  dateAdded
+    mtimestamp  dateModified
+
+  table author
+    uint32      !+id
+    string8     name
+
+  table authorBooks
+    uint32      -authorId
+    uint64      -bookId
+
+  constraint authorBooks.authorId author.id
+  bonstraint authorBooks.bookId   book.id
