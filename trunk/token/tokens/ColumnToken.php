@@ -57,7 +57,7 @@
       $types[ "int64"       ] = "bigint";
       $types[ "uint8"       ] = "tinyint unsigned";
       $types[ "uint16"      ] = "smallint unsigned";
-      $types[ "uint24"      ] = "mediumint) unsigned";
+      $types[ "uint24"      ] = "mediumint unsigned";
       $types[ "uint32"      ] = "int unsigned";
       $types[ "uint64"      ] = "bigint unsigned";
       $types[ "string8"     ] = "tinytext";
