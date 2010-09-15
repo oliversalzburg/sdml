@@ -18,4 +18,4 @@ database library
     uint64      -bookId
 
   constraint authorBooks.authorId author.id
-  bonstraint authorBooks.bookId   book.id
+  constraint authorBooks.bookId   book.id
