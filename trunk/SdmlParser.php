@@ -151,6 +151,7 @@
       if( $this->isDebug ) call_user_func( $this->debugLog, "Parsing line." );
       // Construct parser and parse tokens
       $parser = ParserLibrary::parserFromToken( $token );
+      if( $this->isDebug ) call_user_func( $this->debugLog, "Parser: " . $parser );
       $this->result = call_user_func( array( $parser, "parse" ), $tokens );
 
       if( "DatabaseToken" == get_class( $this->result ) ) {
