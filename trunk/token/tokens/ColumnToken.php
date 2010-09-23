@@ -36,7 +36,7 @@
     }
 
     protected static function stripModifiers( $name ) {
-      $noModifiers = preg_replace( "/^([+!?*-]*)/", "", $name );
+      $noModifiers = preg_replace( "/^([+!?*-1]*)/", "", $name );
       $noArray = preg_replace( "/\[.*\]$/", "", $noModifiers) ;
       return $noArray;
     }
@@ -88,6 +88,10 @@
       return ( FALSE != strstr( $this->Name, "-" ) );
     }
 
+    protected function isUniqueIndex() {
+      return ( FALSE != strstr( $this->Name, "1" ) );
+    }
+
     protected function isAutoIncrement() {
       return ( FALSE != strstr( $this->Name, "+" ) );
     }
@@ -110,8 +114,9 @@
         )
       ;
 
-      if( $this->isPrimaryKey() ) $column .= sprintf( ", PRIMARY KEY (`%s`)", $cleanName );
-      if( $this->hasIndex()     ) $column .= sprintf( ", KEY `%s_Index` (`%s`)", $cleanName, $cleanName );
+      if( $this->isPrimaryKey()  ) $column .= sprintf( ", PRIMARY KEY (`%s`)", $cleanName );
+      if( $this->hasIndex()      ) $column .= sprintf( ", KEY `%s_Index` (`%s`)", $cleanName, $cleanName );
+      if( $this->isUniqueIndex() ) $column .= sprintf( ", UNIQUE KEY `%s_Index` (`%s`)", $cleanName, $cleanName );
       return $column;
     }
   }
