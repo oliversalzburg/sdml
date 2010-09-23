@@ -36,7 +36,7 @@
     }
 
     protected static function stripModifiers( $name ) {
-      $noModifiers = preg_replace( "/^([+!?*-1]*)/", "", $name );
+      $noModifiers = preg_replace( "/^([1+!?*-]*)/", "", $name );
       $noArray = preg_replace( "/\[.*\]$/", "", $noModifiers) ;
       return $noArray;
     }
@@ -89,7 +89,7 @@
     }
 
     protected function isUniqueIndex() {
-      return ( FALSE != strstr( $this->Name, "1" ) );
+      return ( 1 == preg_match( "/^[^a-zA-Z]*1[a-zA-Z]/", $this->Name ) );
     }
 
     protected function isAutoIncrement() {
