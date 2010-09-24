@@ -4,6 +4,7 @@
   require_once( dirname( __FILE__ ) . "/token/tokens/ConstraintToken.php" );
   require_once( dirname( __FILE__ ) . "/token/tokens/DatabaseToken.php" );
   require_once( dirname( __FILE__ ) . "/token/tokens/InsertToken.php" );
+  require_once( dirname( __FILE__ ) . "/token/tokens/KeyToken.php" );
   require_once( dirname( __FILE__ ) . "/token/tokens/SequenceToken.php" );
   require_once( dirname( __FILE__ ) . "/token/tokens/TableToken.php" );
   require_once( dirname( __FILE__ ) . "/token/tokens/TimestampCreatedToken.php" );
@@ -62,6 +63,9 @@
       ParserLibrary::registerParser( "char[]",      "ColumnToken"             );
       ParserLibrary::registerParser( "time",        "ColumnToken"             );
       ParserLibrary::registerParser( "date",        "ColumnToken"             );
+
+      ParserLibrary::registerParser( "key",         "KeyToken"                );
+      ParserLibrary::registerParser( "unique",      "KeyToken"                );
 
       ParserLibrary::registerParser( "insert",      "InsertToken"             );
 
