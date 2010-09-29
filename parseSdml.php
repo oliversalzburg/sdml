@@ -8,7 +8,18 @@
     Logging::addConsoleLogger();
   }
 
-  require_once( dirname( __FILE__ ) . "/SdmlParser.php" );
+  require_once( dirname( __FILE__ ) . "/parser/error/GPTParserException.php" );
+  require_once( dirname( __FILE__ ) . "/parser/GPTParser.php" );
+  require_once( dirname( __FILE__ ) . "/token/tokens/ColumnToken.php" );
+  require_once( dirname( __FILE__ ) . "/token/tokens/ConstraintToken.php" );
+  require_once( dirname( __FILE__ ) . "/token/tokens/DatabaseToken.php" );
+  require_once( dirname( __FILE__ ) . "/token/tokens/InsertToken.php" );
+  require_once( dirname( __FILE__ ) . "/token/tokens/KeyToken.php" );
+  require_once( dirname( __FILE__ ) . "/token/tokens/SequenceToken.php" );
+  require_once( dirname( __FILE__ ) . "/token/tokens/TableToken.php" );
+  require_once( dirname( __FILE__ ) . "/token/tokens/TimestampCreatedToken.php" );
+  require_once( dirname( __FILE__ ) . "/token/tokens/TimestampModifiedToken.php" );
+  require_once( dirname( __FILE__ ) . "/token/tokens/UserToken.php" );
   require_once( dirname( __FILE__ ) . "/MySqlConnector.php" );
 
   $shortopts  = "";
@@ -48,16 +59,51 @@
     $connector->debugLog = "debug";
   }
 
-  $parser = new SdmlParser();
+  $parsers = array(
+    "database"   => "DatabaseToken"          ,
+    "table"      => "TableToken"             ,
+    "constraint" => "ConstraintToken"        ,
+
+    "int8"       => "ColumnToken"            ,
+    "int16"      => "ColumnToken"            ,
+    "int32"      => "ColumnToken"            ,
+    "int64"      => "ColumnToken"            ,
+    "uint8"      => "ColumnToken"            ,
+    "uint16"     => "ColumnToken"            ,
+    "uint32"     => "ColumnToken"            ,
+    "uint64"     => "ColumnToken"            ,
+    "string8"    => "ColumnToken"            ,
+    "string16"   => "ColumnToken"            ,
+    "string24"   => "ColumnToken"            ,
+    "timestamp"  => "ColumnToken"            ,
+    "ctimestamp" => "TimestampCreatedToken"  ,
+    "mtimestamp" => "TimestampModifiedToken" ,
+    "bool"       => "ColumnToken"            ,
+    "byte[]"     => "ColumnToken"            ,
+    "char[]"     => "ColumnToken"            ,
+    "time"       => "ColumnToken"            ,
+    "date"       => "ColumnToken"            ,
+
+    "key"        => "KeyToken"               ,
+    "unique"     => "KeyToken"               ,
+
+    "insert"     => "InsertToken"            ,
+
+    "user"       => "UserToken"              ,
+
+    "sequence"   => "SequenceToken"
+  );
+
+  $parser = new GPTParser();
   $parser->isDebug = $isDebug;
   $parser->errorLog = "error";
   $parser->debugLog = "debug";
-  $parser->init();
-  $parser->QueryFunc = "queryCallback";
+  $parser->init( "DatabaseToken", $parsers );
+  $parser->PostProcessor = "queryCallback";
   try {
     $result = $parser->parseFile( $sdmlFilename );
 
-  } catch( SdmlParserException $ex ) {
+  } catch( GPTParserException $ex ) {
     exit( $ex->getMessage() . "\n" );
   }
 
