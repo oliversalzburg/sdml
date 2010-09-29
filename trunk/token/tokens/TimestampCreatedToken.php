@@ -1,17 +1,17 @@
 <?php
   require_once( dirname( __FILE__ ) . "/ColumnToken.php" );
-  require_once( dirname( __FILE__ ) . "/../ISdmlToken.php" );
-  require_once( dirname( __FILE__ ) . "/../../ParserContext.php" );
+  require_once( dirname( __FILE__ ) . "/../../parser/token/IGPTToken.php" );
+  require_once( dirname( __FILE__ ) . "/../../parser/GPTParserContext.php" );
 
-  class TimestampCreatedToken extends ColumnToken implements ISdmlToken {
-    public function __construct( $name, $type, $defaultValue = "CURRENT_TIMESTAMP" ) {
+  class TimestampCreatedToken extends ColumnToken implements IGPTToken {
+    public function __construct( $name, $type, $defaultValue = "'0000-00-00 00:00:00'" ) {
       parent::__construct( $name, $type, $defaultValue );
     }
 
     public static function parse( $tokens ) {
       $object = parent::parse( $tokens );
 
-      $scope = ParserContext::get()->Scope;
+      $scope = GPTParserContext::get()->Scope;
       $object->scope = $scope;
       $scope->TriggerInsert[] = $object;
       return $object;

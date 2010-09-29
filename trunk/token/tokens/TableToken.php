@@ -1,9 +1,10 @@
 <?php
-  require_once( dirname( __FILE__ ) . "/../AbstractSdmlToken.php" );
-  require_once( dirname( __FILE__ ) . "/../ISdmlToken.php" );
-  require_once( dirname( __FILE__ ) . "/../../ParserContext.php" );
+  require_once( dirname( __FILE__ ) . "/../../parser/error/GPTParserException.php" );
+  require_once( dirname( __FILE__ ) . "/../../parser/token/AbstractGPTToken.php" );
+  require_once( dirname( __FILE__ ) . "/../../parser/token/IGPTToken.php" );
+  require_once( dirname( __FILE__ ) . "/../../parser/GPTParserContext.php" );
 
-  class TableToken extends AbstractSdmlToken implements ISdmlToken {
+  class TableToken extends AbstractGPTToken implements IGPTToken {
     public $Name;
     public $Engine;
     public $DefaultCharset;
@@ -33,9 +34,9 @@
       $object = new TableToken( $tokens[ 0 ] );
       call_user_func_array( array( $object, "__construct" ), $tokens );
 
-      $scope = ParserContext::get()->Scope;
+      $scope = GPTParserContext::get()->Scope;
       $className = get_class( $scope );
-      if( "DatabaseToken" != $className ) throw new SdmlParserException( sprintf( "Table defined in invalid scope. Expected 'DatabaseToken' got '%s' at %s:%s.", $className, ParserContext::get()->Filename, ParserContext::get()->Line ) );
+      if( "DatabaseToken" != $className ) throw new GPTParserException( sprintf( "Table defined in invalid scope. Expected 'DatabaseToken' got '%s' at %s:%s.", $className, GPTParserContext::get()->Filename, GPTParserContext::get()->Line ) );
 
       $object->scope = $scope;
       $scope->Tables[] = $object;
@@ -72,7 +73,7 @@
           " END;" .
           $delimiterEnd
         ;
-        parent::callQueryCallback( $callback, $insertTrigger );
+        parent::callPostProcessCallback( $callback, $insertTrigger );
         $triggers .= $insertTrigger;
       }
 
@@ -97,17 +98,17 @@
           " END;" .
           $delimiterEnd
         ;
-        parent::callQueryCallback( $callback, $updateTrigger );
+        parent::callPostProcessCallback( $callback, $updateTrigger );
         $triggers .= $updateTrigger;
       }
       return $triggers;
     }
 
-    public function toSql( $callback ) {
+    public function render( $callback ) {
       // Construct columns
       $columns = "";
       foreach( $this->Columns as $column ) {
-        $columns .= $column->toSql( null ) . ", ";
+        $columns .= $column->render( null ) . ", ";
       }
       if( count( $this->Columns ) > 0 ) {
         $columns = substr( $columns, 0, strlen( $columns ) - 2 );
@@ -124,7 +125,7 @@
         )
       ;
 
-      parent::callQueryCallback( $callback, $table );
+      parent::callPostProcessCallback( $callback, $table );
 
       // Construct triggers
       $triggers = $this->constructTrigger( $callback );

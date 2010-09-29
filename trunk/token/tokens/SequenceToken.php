@@ -1,8 +1,9 @@
 <?php
-  require_once( dirname( __FILE__ ) . "/../AbstractSdmlToken.php" );
-  require_once( dirname( __FILE__ ) . "/../ISdmlToken.php" );
+  require_once( dirname( __FILE__ ) . "/../../parser/token/AbstractGPTToken.php" );
+  require_once( dirname( __FILE__ ) . "/../../parser/token/IGPTToken.php" );
+  require_once( dirname( __FILE__ ) . "/../../parser/GPTParserContext.php" );
 
-  class SequenceToken extends AbstractSdmlToken implements ISdmlToken {
+  class SequenceToken extends AbstractGPTToken implements IGPTToken {
     public $Start;
     public $End;
     public $Placeholder;
@@ -29,14 +30,14 @@
       $range = range( $start, $end );
       foreach( $range as $i ) {
         $line = str_replace( $placeholder, $i, $target );
-        $parser = ParserContext::get()->Parser;
-        $parser->internalParse( ParserContext::get()->Line, $line );
+        $parser = GPTParserContext::get()->Parser;
+        $parser->injectAtCurrentScope( GPTParserContext::get()->Line, $line );
       }
 
       return null;
     }
 
-    public function toSql( $callback ) {
+    public function render( $callback ) {
      return "";
     }
   }

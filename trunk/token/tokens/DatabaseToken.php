@@ -1,8 +1,10 @@
 <?php
-  require_once( dirname( __FILE__ ) . "/../AbstractSdmlToken.php" );
-  require_once( dirname( __FILE__ ) . "/../ISdmlToken.php" );
+  require_once( dirname( __FILE__ ) . "/../../parser/error/GPTParserException.php" );
+  require_once( dirname( __FILE__ ) . "/../../parser/token/AbstractGPTToken.php" );
+  require_once( dirname( __FILE__ ) . "/../../parser/token/IGPTToken.php" );
+  require_once( dirname( __FILE__ ) . "/../../parser/GPTParserContext.php" );
 
-  class DatabaseToken extends AbstractSdmlToken implements ISdmlToken {
+  class DatabaseToken extends AbstractGPTToken implements IGPTToken {
     public $Name;
     public $CharacterSet;
     public $Collate;
@@ -30,12 +32,12 @@
       $object = new DatabaseToken( $tokens[ 0 ] );
       call_user_func_array( array( $object, "__construct" ), $tokens );
 
-      $scope = ParserContext::get()->Scope;
-      if( null != $scope ) throw new SdmlParserException( sprintf( "Database defined in invalid scope. Expected 'null' got '%s' at %s:%s.", get_class( $scope ), ParserContext::get()->Filename, ParserContext::get()->Line ) );
+      $scope = GPTParserContext::get()->Scope;
+      if( null != $scope ) throw new GPTParserException( sprintf( "Database defined in invalid scope. Expected 'null' got '%s' at %s:%s.", get_class( $scope ), GPTParserContext::get()->Filename, GPTParserContext::get()->Line ) );
       return $object;
     }
 
-    public function toSql( $callback ) {
+    public function render( $callback ) {
       $drop =
         sprintf(
           "DROP DATABASE IF EXISTS `%s`;",
@@ -51,28 +53,28 @@
         )
       ;
 
-      parent::callQueryCallback( $callback, $drop, $create );
+      parent::callPostProcessCallback( $callback, $drop, $create );
 
       // Construct tables and their inserter
       $tables   = "";
       $inserter = "";
       foreach( $this->Tables as $table ) {
-        $tables .= $table->toSql( $callback );
+        $tables .= $table->render( $callback );
         foreach( $table->Inserter as $insert ) {
-          $inserter .= $insert->toSql( $callback );
+          $inserter .= $insert->render( $callback );
         }
       }
 
       // Construct constraints
       $constraints = "";
       foreach( $this->Constraints as $constraint ) {
-        $constraints .= $constraint->toSql( $callback );
+        $constraints .= $constraint->render( $callback );
       }
 
       // Construct Users
       $users = "";
       foreach( $this->User as $user ) {
-        $users .= $user->toSql( $callback );
+        $users .= $user->render( $callback );
       }
 
       $result =

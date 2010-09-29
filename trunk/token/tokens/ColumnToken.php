@@ -1,9 +1,10 @@
 <?php
-  require_once( dirname( __FILE__ ) . "/../AbstractSdmlToken.php" );
-  require_once( dirname( __FILE__ ) . "/../ISdmlToken.php" );
-  require_once( dirname( __FILE__ ) . "/../../ParserContext.php" );
+  require_once( dirname( __FILE__ ) . "/../../parser/error/GPTParserException.php" );
+  require_once( dirname( __FILE__ ) . "/../../parser/token/AbstractGPTToken.php" );
+  require_once( dirname( __FILE__ ) . "/../../parser/token/IGPTToken.php" );
+  require_once( dirname( __FILE__ ) . "/../../parser/GPTParserContext.php" );
 
-  class ColumnToken extends AbstractSdmlToken implements ISdmlToken {
+  class ColumnToken extends AbstractGPTToken implements IGPTToken {
     public $Name;
     public $Type;
     public $DefaultValue;
@@ -26,9 +27,9 @@
       $object = new ColumnToken( $name, $type, $defaultValue );
       //call_user_func_array( array( $object, "__construct" ), $tokens );
 
-      $scope = ParserContext::get()->Scope;
+      $scope = GPTParserContext::get()->Scope;
       $className = get_class( $scope );
-      if( "TableToken" != $className ) throw new SdmlParserException( sprintf( "Column defined in invalid scope. Expected 'TableToken' got '%s' at %s:%s.", $className, ParserContext::get()->Filename, ParserContext::get()->Line ) );
+      if( "TableToken" != $className ) throw new GPTParserException( sprintf( "Column defined in invalid scope. Expected 'TableToken' got '%s' at %s:%s.", $className, GPTParserContext::get()->Filename, GPTParserContext::get()->Line ) );
 
       $object->scope = $scope;
       $scope->Columns[] = $object;
@@ -72,7 +73,7 @@
       $types[ "char[]"      ] = sprintf( "varchar(%s)", $size );
       $types[ "time"        ] = "time";
       $types[ "date"        ] = "date";
-      if( !isset( $types[ $type ] ) ) throw new SdmlParserException( sprintf( "Unknown column type '%s' at %s:%s.", $type, ParserContext::get()->Filename, ParserContext::get()->Line ) );
+      if( !isset( $types[ $type ] ) ) throw new GPTParserException( sprintf( "Unknown column type '%s' at %s:%s.", $type, GPTParserContext::get()->Filename, GPTParserContext::get()->Line ) );
       return $types[ $type ];
     }
 
@@ -96,7 +97,7 @@
       return ( FALSE != strstr( $this->Name, "+" ) );
     }
 
-    public function toSql( $callback ) {
+    public function render( $callback ) {
       $cleanName = self::stripModifiers( $this->Name );
       $column =
         sprintf(

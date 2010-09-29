@@ -116,7 +116,7 @@
       // Find indentation
       $lineLength = strlen( $line );
       $found      = preg_match( "/^(\s)+/", $line, $matches );
-      if( 0 == $found || 0 == $lineLength ) {
+      if( 0 == $lineLength ) {
         // Skip empty lines
         if( 0 == $lineLength ) return;
 
