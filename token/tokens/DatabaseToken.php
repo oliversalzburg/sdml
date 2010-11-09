@@ -5,6 +5,8 @@
   require_once( dirname( __FILE__ ) . "/../../parser/GPTParserContext.php" );
 
   class DatabaseToken extends AbstractGPTToken implements IGPTToken {
+    public $UseExisting;
+
     public $Name;
     public $CharacterSet;
     public $Collate;
@@ -26,11 +28,19 @@
     }
 
     public static function parse( $tokens ) {
+      $useExisting = false;
+      if( "use" == $tokens[ 0 ] ) {
+        $useExisting = true;
+        // Drop use token
+        array_shift( $tokens );
+      }
+      // Drop database token
       array_shift( $tokens );
 
       parent::expectParameters( $tokens, "name" );
       $object = new DatabaseToken( $tokens[ 0 ] );
       call_user_func_array( array( $object, "__construct" ), $tokens );
+      $object->UseExisting = $useExisting;
 
       $scope = GPTParserContext::get()->Scope;
       if( null != $scope ) throw new GPTParserException( sprintf( "Database defined in invalid scope. Expected 'null' got '%s' at %s:%s.", get_class( $scope ), GPTParserContext::get()->Filename, GPTParserContext::get()->Line ) );
@@ -38,20 +48,33 @@
     }
 
     public function render( $callback ) {
-      $drop =
-        sprintf(
-          "DROP DATABASE IF EXISTS `%s`;",
-          $this->Name
-        )
-      ;
-      $create =
-        sprintf(
-          "CREATE DATABASE `%s` CHARACTER SET %s COLLATE %s;",
-          $this->Name,
-          $this->CharacterSet,
-          $this->Collate
-        )
-      ;
+      $drop = "";
+      $create = "";
+
+      if( !$this->UseExisting ) {
+        $drop =
+          sprintf(
+            "DROP DATABASE IF EXISTS `%s`;",
+            $this->Name
+          )
+        ;
+        $create =
+          sprintf(
+            "CREATE DATABASE `%s` CHARACTER SET %s COLLATE %s;",
+            $this->Name,
+            $this->CharacterSet,
+            $this->Collate
+          )
+        ;
+
+      } else {
+        $create =
+          sprintf(
+            "USE `%s`;",
+            $this->Name
+          )
+        ;
+      }
 
       parent::callPostProcessCallback( $callback, $drop, $create );
 
