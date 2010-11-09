@@ -5,7 +5,8 @@
   require_once( dirname( __FILE__ ) . "/../../parser/GPTParserContext.php" );
 
   class DatabaseToken extends AbstractGPTToken implements IGPTToken {
-    public $UseExisting;
+    private $UseExisting;
+    private $IgnoreDatabase;
 
     public $Name;
     public $CharacterSet;
@@ -28,19 +29,28 @@
     }
 
     public static function parse( $tokens ) {
-      $useExisting = false;
+      $useExisting    = false;
+      $ignoreDatabase = false;
+
       if( "use" == $tokens[ 0 ] ) {
         $useExisting = true;
         // Drop use token
+        array_shift( $tokens );
+
+      } else if ( "ignore" == $tokens[ 0 ] ) {
+        $ignoreDatabase = true;
+        // Drop ignore token
         array_shift( $tokens );
       }
       // Drop database token
       array_shift( $tokens );
 
-      parent::expectParameters( $tokens, "name" );
-      $object = new DatabaseToken( $tokens[ 0 ] );
+      if( !$ignoreDatabase ) parent::expectParameters( $tokens, "name" );
+      $name = ( $ignoreDatabase ) ? "" : $tokens[ 0 ];
+      $object = new DatabaseToken( $name );
       call_user_func_array( array( $object, "__construct" ), $tokens );
-      $object->UseExisting = $useExisting;
+      $object->UseExisting    = $useExisting;
+      $object->IgnoreDatabase = $ignoreDatabase;
 
       $scope = GPTParserContext::get()->Scope;
       if( null != $scope ) throw new GPTParserException( sprintf( "Database defined in invalid scope. Expected 'null' got '%s' at %s:%s.", get_class( $scope ), GPTParserContext::get()->Filename, GPTParserContext::get()->Line ) );
@@ -51,29 +61,31 @@
       $drop = "";
       $create = "";
 
-      if( !$this->UseExisting ) {
-        $drop =
-          sprintf(
-            "DROP DATABASE IF EXISTS `%s`;",
-            $this->Name
-          )
-        ;
-        $create =
-          sprintf(
-            "CREATE DATABASE `%s` CHARACTER SET %s COLLATE %s;",
-            $this->Name,
-            $this->CharacterSet,
-            $this->Collate
-          )
-        ;
+      if( !$this->IgnoreDatabase ) {
+        if( !$this->UseExisting ) {
+          $drop =
+            sprintf(
+              "DROP DATABASE IF EXISTS `%s`;",
+              $this->Name
+            )
+          ;
+          $create =
+            sprintf(
+              "CREATE DATABASE `%s` CHARACTER SET %s COLLATE %s;",
+              $this->Name,
+              $this->CharacterSet,
+              $this->Collate
+            )
+          ;
 
-      } else {
-        $create =
-          sprintf(
-            "USE `%s`;",
-            $this->Name
-          )
-        ;
+        } else {
+          $create =
+            sprintf(
+              "USE `%s`;",
+              $this->Name
+            )
+          ;
+        }
       }
 
       parent::callPostProcessCallback( $callback, $drop, $create );
