@@ -61,6 +61,8 @@
 
   $parsers = array(
     "database"   => "DatabaseToken"          ,
+    "use"        => "DatabaseToken"          ,
+
     "table"      => "TableToken"             ,
     "constraint" => "ConstraintToken"        ,
 
