@@ -112,7 +112,9 @@
 
       $table =
         sprintf(
+          "DROP TABLE IF EXISTS %s`%s`;\n" .
           "CREATE TABLE %s`%s` (%s) ENGINE=%s DEFAULT CHARSET=%s;",
+          ( $this->scope->Name != "" ) ? "`" . $this->scope->Name . "`." : "",
           ( $this->scope->Name != "" ) ? "`" . $this->scope->Name . "`." : "",
           $this->Name,
           $columns,
