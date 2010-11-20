@@ -8,6 +8,8 @@
     private $UseExisting;
     private $IgnoreDatabase;
 
+    public static $IgnoreAllDatabases = false;
+
     public $Name;
     public $CharacterSet;
     public $Collate;
@@ -31,6 +33,7 @@
     public static function parse( $tokens ) {
       $useExisting    = false;
       $ignoreDatabase = false;
+      if( self::$IgnoreAllDatabases ) $ignoreDatabase = true;
 
       if( "use" == $tokens[ 0 ] ) {
         $useExisting = true;
