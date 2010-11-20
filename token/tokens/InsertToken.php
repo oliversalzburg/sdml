@@ -46,8 +46,8 @@
 
       $result =
         sprintf(
-          "INSERT INTO `%s`.`%s` VALUES (%s);",
-          $databaseName,
+          "INSERT INTO %s`%s` VALUES (%s);",
+          ( $databaseName != "" ) ? "`" . $databaseName . "`." : "",
           $tableName,
           $data
         )

@@ -43,10 +43,6 @@
       return $object;
     }
 
-    private function formatTable() {
-      return sprintf( "CREATE TABLE `%s`.`%s` (%s) ENGINE=%s DEFAULT CHARACTER=%s;", $this->scope->Name, $this->Name, implode( ",", $this->Columns ), $this->Engine, $this->DefaultCharset );
-    }
-
     private function constructTrigger( $callback ) {
       $triggers = "";
       $delimiterBegin = "";//"DELIMITER $$ ";
@@ -56,9 +52,9 @@
       if( 0 < count( $this->TriggerInsert ) ) {
         $insertTrigger = sprintf(
           "%s" .
-          "CREATE TRIGGER `%s`.`on%sCreated` BEFORE INSERT ON `%s`.`%s` FOR EACH ROW BEGIN ",
+          "CREATE TRIGGER %s`on%sCreated` BEFORE INSERT ON `%s`.`%s` FOR EACH ROW BEGIN ",
           $delimiterBegin,
-          $this->scope->Name,
+          ( $this->scope->Name != "" ) ? "`" . $this->scope->Name . "`." : "",
           $this->Name,
           $this->scope->Name,
           $this->Name
@@ -81,9 +77,9 @@
       if( 0 < count( $this->TriggerUpdate ) ) {
         $updateTrigger = sprintf(
           "%s" .
-          "CREATE TRIGGER `%s`.`on%sUpdated` BEFORE UPDATE ON `%s`.`%s` FOR EACH ROW BEGIN ",
+          "CREATE TRIGGER %s`on%sUpdated` BEFORE UPDATE ON `%s`.`%s` FOR EACH ROW BEGIN ",
           $delimiterBegin,
-          $this->scope->Name,
+          ( $this->scope->Name != "" ) ? "`" . $this->scope->Name . "`." : "",
           $this->Name,
           $this->scope->Name,
           $this->Name
@@ -116,8 +112,8 @@
 
       $table =
         sprintf(
-          "CREATE TABLE `%s`.`%s` (%s) ENGINE=%s DEFAULT CHARSET=%s;",
-          $this->scope->Name,
+          "CREATE TABLE %s`%s` (%s) ENGINE=%s DEFAULT CHARSET=%s;",
+          ( $this->scope->Name != "" ) ? "`" . $this->scope->Name . "`." : "",
           $this->Name,
           $columns,
           $this->Engine,
