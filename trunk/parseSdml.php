@@ -28,6 +28,7 @@
   //$shortopts .= "o::";  // Output filename (if none is given stdout will be used)
   $shortopts .= "d";    // Debug output
   $shortopts .= "x:";   // Exclude token
+  $shortopts .= "n";    // Ignore databases
 
   $sdmlFilename   = "";
   $mysqlPassword  = "";
@@ -52,6 +53,10 @@
 
   if( isset( $options[ "d" ] ) ) {
     $isDebug = true;
+  }
+
+  if( isset( $options[ "n" ] ) ) {
+    DatabaseToken::$IgnoreAllDatabases = true;
   }
 
   if( isset( $options[ "x" ] ) ) {
@@ -121,7 +126,7 @@
   * Print the command line parameters of this script.
   */
   function printUseage() {
-    echo( "parseSdml.php -i<input.sdml> [-x<token to exclude>,<token>,<...>] [-p<MySql root password>] [-d]\n" );
+    echo( "parseSdml.php -i <input.sdml> [-x <token to exclude>,<token>,<...>] [-n] [-p<MySql root password>] [-d]\n" );
   }
 
   /**
