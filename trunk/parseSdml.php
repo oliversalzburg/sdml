@@ -107,6 +107,7 @@
   $parser->isDebug = $isDebug;
   $parser->errorLog = "error";
   $parser->debugLog = "debug";
+  $parser->excludeTokens = $exclude;
   $parser->init( "DatabaseToken", $parsers );
   $parser->PostProcessor = "queryCallback";
   try {
