@@ -48,7 +48,7 @@
       if( !$ignoreDatabase ) parent::expectParameters( $tokens, "name" );
       $name = ( $ignoreDatabase ) ? "" : $tokens[ 0 ];
       $object = new DatabaseToken( $name );
-      call_user_func_array( array( $object, "__construct" ), $tokens );
+      if( !$ignoreDatabase ) call_user_func_array( array( $object, "__construct" ), $tokens );
       $object->UseExisting    = $useExisting;
       $object->IgnoreDatabase = $ignoreDatabase;
 
