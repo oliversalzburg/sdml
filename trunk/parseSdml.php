@@ -154,7 +154,9 @@
   * @param string $query
   */
   function echoQuery( $query ) {
-    echo $query . "\n";
+    if( "" != $query ) {
+      echo $query . "\n";
+    }
   }
 
   /**
