@@ -9,6 +9,7 @@
     private $IgnoreDatabase;
 
     public static $IgnoreAllDatabases = false;
+    public static $UseAllExisting     = false;
 
     public $Name;
     public $CharacterSet;
@@ -34,6 +35,7 @@
       $useExisting    = false;
       $ignoreDatabase = false;
       if( self::$IgnoreAllDatabases ) $ignoreDatabase = true;
+      if( self::$UseAllExisting ) $useExisting = true;
 
       if( "use" == $tokens[ 0 ] ) {
         $useExisting = true;
