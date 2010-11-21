@@ -48,13 +48,13 @@
     public function render( $callback ) {
       $result =
         sprintf(
-          "ALTER TABLE %s`%s` ADD CONSTRAINT FK_%s_%s FOREIGN KEY (`%s`) REFERENCES `%s`.`%s` (`%s`);",
+          "ALTER TABLE %s`%s` ADD CONSTRAINT FK_%s_%s FOREIGN KEY (`%s`) REFERENCES %s`%s` (`%s`);",
           ( $this->scope->Name != "" ) ? "`" . $this->scope->Name . "`." : "",
           $this->getTargetTable(),
           $this->getTargetTable(),
           $this->getTargetColumn(),
           $this->getTargetColumn(),
-          $this->scope->Name,
+          ( $this->scope->Name != "" ) ? "`" . $this->scope->Name . "`." : "",
           $this->getReferenceTable(),
           $this->getReferenceColumn()
         )
