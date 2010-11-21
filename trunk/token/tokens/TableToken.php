@@ -69,7 +69,7 @@
         }
         $insertTrigger .=
           " END;" .
-          ( $delimiterEnd != "" ) ? "\n$$" . $delimiterEnd : ""
+          ( ( $delimiterEnd != "" ) ? "\n$$" . $delimiterEnd : "" )
         ;
         parent::callPostProcessCallback( $callback, $insertTrigger );
         $triggers .= $insertTrigger;
@@ -94,7 +94,7 @@
         }
         $updateTrigger .=
           " END;" .
-          ( $delimiterEnd != "" ) ? "\n$$" . $delimiterEnd : ""
+          ( ( $delimiterEnd != "" ) ? "\n$$" . $delimiterEnd : "" )
         ;
         parent::callPostProcessCallback( $callback, $updateTrigger );
         $triggers .= $updateTrigger;
