@@ -14,6 +14,8 @@
 
     public $TriggerInsert;
     public $TriggerUpdate;
+    public static $TriggerDelimiterBegin = "DELIMITER \$\$\n";
+    public static $TriggerDelimiterEnd   = "\nDELIMITER ;";
 
     public function __construct( $name, $engine = "InnoDB", $defaultCharset = "utf8" ) {
       $this->Name           = $name;
@@ -45,8 +47,8 @@
 
     private function constructTrigger( $callback ) {
       $triggers = "";
-      $delimiterBegin = "";//"DELIMITER $$ ";
-      $delimiterEnd   = "";//"DELIMITER ;";
+      $delimiterBegin = self::$TriggerDelimiterBegin;
+      $delimiterEnd   = self::$TriggerDelimiterEnd;
 
       // Insert trigger
       if( 0 < count( $this->TriggerInsert ) ) {

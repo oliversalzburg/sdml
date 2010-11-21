@@ -73,6 +73,8 @@
     $connector = new MySqlConnector( $mysqlPassword );
     $connector->errorLog = "error";
     $connector->debugLog = "debug";
+    TableToken::$TriggerDelimiterBegin  = "";
+    TableToken::$TriggerDelimiterEnd    = "";
   }
 
   $parsers = array(
@@ -160,6 +162,7 @@
   */
   function echoQuery( $query ) {
     if( "" != $query ) {
+      //$query = preg_replace( "/;(?!$)/", ";\n", $query );
       echo $query . "\n";
     }
   }
