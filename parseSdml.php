@@ -29,6 +29,7 @@
   $shortopts .= "d";    // Debug output
   $shortopts .= "x:";   // Exclude token
   $shortopts .= "n";    // Ignore databases
+  $shortopts .= "u";    // Use databases
 
   $sdmlFilename   = "";
   $mysqlPassword  = "";
@@ -57,6 +58,10 @@
 
   if( isset( $options[ "n" ] ) ) {
     DatabaseToken::$IgnoreAllDatabases = true;
+  }
+
+  if( isset( $options[ "u" ] ) ) {
+    DatabaseToken::$UseAllExisting = true;
   }
 
   if( isset( $options[ "x" ] ) ) {
