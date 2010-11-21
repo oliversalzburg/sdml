@@ -54,11 +54,11 @@
       if( 0 < count( $this->TriggerInsert ) ) {
         $insertTrigger = sprintf(
           "%s" .
-          "CREATE TRIGGER %s`on%sCreated` BEFORE INSERT ON `%s`.`%s` FOR EACH ROW BEGIN ",
+          "CREATE TRIGGER %s`on%sCreated` BEFORE INSERT ON %s`%s` FOR EACH ROW BEGIN ",
           $delimiterBegin,
           ( $this->scope->Name != "" ) ? "`" . $this->scope->Name . "`." : "",
           $this->Name,
-          $this->scope->Name,
+          ( $this->scope->Name != "" ) ? "`" . $this->scope->Name . "`." : "",
           $this->Name
         );
         foreach( $this->TriggerInsert as $trigger ) {
@@ -79,11 +79,11 @@
       if( 0 < count( $this->TriggerUpdate ) ) {
         $updateTrigger = sprintf(
           "%s" .
-          "CREATE TRIGGER %s`on%sUpdated` BEFORE UPDATE ON `%s`.`%s` FOR EACH ROW BEGIN ",
+          "CREATE TRIGGER %s`on%sUpdated` BEFORE UPDATE ON %s`%s` FOR EACH ROW BEGIN ",
           $delimiterBegin,
           ( $this->scope->Name != "" ) ? "`" . $this->scope->Name . "`." : "",
           $this->Name,
-          $this->scope->Name,
+          ( $this->scope->Name != "" ) ? "`" . $this->scope->Name . "`." : "",
           $this->Name
         );
         foreach( $this->TriggerUpdate as $trigger ) {
