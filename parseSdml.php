@@ -104,6 +104,8 @@
     "char[]"     => "ColumnToken"            ,
     "time"       => "ColumnToken"            ,
     "date"       => "ColumnToken"            ,
+    "float"      => "ColumnToken"            ,
+    "double"     => "ColumnToken"            ,
 
     "key"        => "KeyToken"               ,
     "unique"     => "KeyToken"               ,
