@@ -73,6 +73,8 @@
       $types[ "char[]"      ] = sprintf( "varchar(%s)", $size );
       $types[ "time"        ] = "time";
       $types[ "date"        ] = "date";
+      $types[ "float"       ] = "float";
+      $types[ "double"      ] = "double";
       if( !isset( $types[ $type ] ) ) throw new GPTParserException( sprintf( "Unknown column type '%s' at %s:%s.", $type, GPTParserContext::get()->Filename, GPTParserContext::get()->Line ) );
       return $types[ $type ];
     }
