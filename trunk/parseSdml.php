@@ -1,13 +1,4 @@
 <?php
-  // This logging framework is part of the project SDML originated from.
-  // These references remain in the code to ensure compatibility with it.
-  define( "SDML_USE_LOGGING", false );
-  if( SDML_USE_LOGGING ) {
-    require_once( dirname( __FILE__ ) . "/../../logging/Logging.php" );
-    Logging::setLogLevel( Logging::eDEBUG );
-    Logging::addConsoleLogger();
-  }
-
   require_once( dirname( __FILE__ ) . "/parser/error/GPTParserException.php" );
   require_once( dirname( __FILE__ ) . "/parser/GPTParser.php" );
   require_once( dirname( __FILE__ ) . "/token/tokens/ColumnToken.php" );
@@ -185,11 +176,7 @@
   * @param string $message
   */
   function debug( $message ) {
-    if( SDML_USE_LOGGING ) {
-      Logging::debug( $message );
-    } else {
-      echo( $message . "\n" );
-    }
+    echo( $message . "\n" );
   }
 
   /**
@@ -198,10 +185,6 @@
   * @param string $message
   */
   function error( $message ) {
-    if( SDML_USE_LOGGING ) {
-      Logging::error( $message );
-    } else {
-      echo( $message . "\n" );
-    }
+    echo( $message . "\n" );
   }
 ?>
