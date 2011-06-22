@@ -65,6 +65,10 @@
       $types[ "string16"    ] = "text";
       $types[ "string24"    ] = "mediumtext";
       $types[ "string32"    ] = "longtext";
+      $types[ "binary8"     ] = "tinyblob";
+      $types[ "binary16"    ] = "blob";
+      $types[ "binary24"    ] = "mediumblob";
+      $types[ "binary32"    ] = "longblob";
       $types[ "timestamp"   ] = "timestamp";
       $types[ "ctimestamp"  ] = "timestamp";
       $types[ "mtimestamp"  ] = "timestamp";
